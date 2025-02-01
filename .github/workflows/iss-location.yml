@@ -16,7 +16,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: 22f3003070@ds.study.iitm.ac.in - Install uv
+      # Ensure your email is included in the name of the step here:
+      - name: 22f3003070@ds.study.iitm.ac.in - Install uv and fetch ISS data
         run: |
           uv run --with requests python << 'EOF'
           import requests
