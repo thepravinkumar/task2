@@ -1,31 +1,36 @@
-name: Fetch ISS Location Data
+name: Log ISS Location Data Daily
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Every hour
-  workflow_dispatch:  # Allows triggering manually
+    # Runs at 12:00 UTC (noon) every day
+    - cron: "0 12 * * *"
+  workflow_dispatch: # Allows manual triggering
 
 jobs:
-  fetch_and_commit:
+  collect-iss-data:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
       - name: 22f3003070@ds.study.iitm.ac.in
         run: echo "Hello, world!"
-
-      - name: Fetch ISS location data
-        run: |
-          python3 -c "
+          uv run --with requests python << 'EOF'
           import requests
+
           data = requests.get('http://api.open-notify.org/iss-now.json').text
           with open('iss-location.jsonl', 'a') as f:
-              f.write(data + '\n')"
+              f.write(data + '\n')
+          'EOF'
 
       - name: Commit and push changes
-        run: |
+        run: | # shell
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add iss-location.jsonl
