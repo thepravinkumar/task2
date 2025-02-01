@@ -12,6 +12,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        
+      - name: 22f3003070@ds.study.iitm.ac.in
+        run: echo "Hello, world!"
 
       - name: Fetch ISS location data
         run: |
